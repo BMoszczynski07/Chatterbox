@@ -380,8 +380,15 @@
       }
     }
 
+    &-conversation__file-input {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     &-conversation__send,
-    &-conversation__attach-image,
+    &-conversation__file-input,
     &-conversation__audio {
       font-size: 19px;
       background: #f0f0f0;
@@ -423,8 +430,8 @@
     }
 
     &-conversation__name {
-      font-size: 28px;
-      margin: 0;
+      font-size: 27px;
+      margin: 0 !important;
     }
 
     &-user-desc {
@@ -440,7 +447,10 @@
     }
 
     &-since {
-      margin: 8px 0;
+      margin: 0;
+      color: rgb(137, 137, 137);
+      font-weight: 400;
+      letter-spacing: -0.25px;
       font-size: 16px;
     }
 
@@ -454,7 +464,7 @@
     &-message__container {
       width: 100%;
       display: flex;
-      margin: 12px 0;
+      margin: 2px 0;
 
       &--mine {
         justify-content: flex-end;

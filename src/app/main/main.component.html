@@ -557,7 +557,7 @@
               </h1>
               <!-- <h2 class="main__computer-user-desc">Lorem ipsum dolor sit</h2> -->
               <h2 class="main__computer-since">
-                On Chatterbox since:
+                <i class="fa-regular fa-calendar-days"></i> On Chatterbox since:
                 {{
                   loadedConversation.conversationparticipants_conversation
                     .ConversationParticipants[0].conversationparticipants_user
@@ -605,12 +605,9 @@
           placeholder="Type your message"
         ></textarea>
         <label for="file-upload">
-          <button
-            class="main__computer-conversation__attach-image"
-            type="button"
-          >
-            <i class="fa-solid fa-image"></i>
-          </button>
+          <i
+            class="main__computer-conversation__file-input fa-solid fa-image"
+          ></i>
         </label>
         <input
           id="file-upload"

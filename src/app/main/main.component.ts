@@ -62,6 +62,11 @@ export class MainComponent implements OnInit {
       }
 
       if (findConversationResponse !== null) {
+        if (findConversationResponse == this.loadedConversation) {
+          this.loadedConversation = null;
+          return;
+        }
+
         this.loadedConversation = findConversationResponse;
 
         this.handleLoadMessages(
@@ -140,7 +145,11 @@ export class MainComponent implements OnInit {
       this.userConversations = null;
 
       this.contactsRequest = await fetch(
-        `${this.backendUrlService.backendURL}/users/get-contacts/${e.target.value}`
+        `${this.backendUrlService.backendURL}/users/get-contacts`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ search_param: e.target.value }),
+        }
       );
 
       const contactsResponse = await this.contactsRequest.json();
@@ -252,6 +261,11 @@ export class MainComponent implements OnInit {
     const findConversation = this.userConversations.find(
       (conv: any) => conv.conversationparticipants_conversation.id === id
     );
+
+    if (findConversation == this.loadedConversation) {
+      this.loadedConversation = null;
+      return;
+    }
 
     this.loadedConversation = findConversation;
 

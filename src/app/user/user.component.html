@@ -246,6 +246,12 @@
 
       <button class="user__save-changes" type="submit">Save changes</button>
     </form>
+
+    <button (click)="deleteModal = !deleteModal" class="user__delete-account">
+      <i class="fa-regular fa-trash-can"></i>
+
+      Delete account
+    </button>
     } @else if (userLoading === false && unique_id !==
     userService.user?.unique_id) {
     <button class="user__logo-overlay">
@@ -265,7 +271,7 @@
       </div>
 
       <h5 class="user__since">
-        On Chatterbox since:
+        <i class="fa-regular fa-calendar-days"></i> On Chatterbox since:
         {{ user?.create_date | date : "yyyy-MM-dd hh:mm" : "UTC" }}
       </h5>
 
@@ -273,12 +279,6 @@
     </div>
     }
   </div>
-
-  <button (click)="deleteModal = !deleteModal" class="user__delete-account">
-    <i class="fa-regular fa-trash-can"></i>
-
-    Delete account
-  </button>
 
   @if (deleteModal) {
   <div class="user__delete-account__background">

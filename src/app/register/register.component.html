@@ -1,1 +1,132 @@
-<p>register works!</p>
+<div class="login">
+  <div class="login__logo-overlay">
+    <div class="login__logo">
+      <img src="./icon.png" alt="Logo" class="login__logo-img" />
+
+      <div class="login__logo-text">
+        <h1 class="login__logo-title">Chatterbox</h1>
+        <h2 class="login__logo-subtitle">Where conversations come to life</h2>
+      </div>
+    </div>
+
+    <form (submit)="handleUserRegister($event)" class="login__form">
+      <div class="login__inputs">
+        <div class="login__form-input__container">
+          <i class="fa-solid fa-user login__form-input__icon"></i>
+
+          <input
+            type="text"
+            class="login__form-input"
+            placeholder="Login"
+            [(ngModel)]="registerFormGroup.unique_id"
+            [ngModelOptions]="{ standalone: true }"
+            required
+          />
+        </div>
+
+        <div class="login__form-input__container">
+          <i class="fa-solid fa-id-card login__form-input__icon"></i>
+
+          <input
+            type="text"
+            class="login__form-input"
+            placeholder="First name"
+            [(ngModel)]="registerFormGroup.firstName"
+            [ngModelOptions]="{ standalone: true }"
+            required
+          />
+        </div>
+
+        <div class="login__form-input__container">
+          <i class="fa-solid fa-id-card login__form-input__icon"></i>
+
+          <input
+            type="text"
+            class="login__form-input"
+            placeholder="Last name"
+            [(ngModel)]="registerFormGroup.lastName"
+            [ngModelOptions]="{ standalone: true }"
+            required
+          />
+        </div>
+
+        <div class="login__form-input__container">
+          <i class="fa-solid fa-envelope login__form-input__icon"></i>
+
+          <input
+            type="email"
+            class="login__form-input"
+            placeholder="E-mail"
+            [(ngModel)]="registerFormGroup.email"
+            [ngModelOptions]="{ standalone: true }"
+            required
+          />
+        </div>
+
+        <div class="login__form-input__container">
+          <i class="fa-solid fa-key login__form-input__icon"></i>
+
+          <input
+            (focus)="passRequirements = !passRequirements"
+            (blur)="passRequirements = !passRequirements"
+            type="password"
+            class="login__form-input"
+            placeholder="Password"
+            [(ngModel)]="registerFormGroup.password"
+            [ngModelOptions]="{ standalone: true }"
+            required
+          />
+        </div>
+
+        @if (passRequirements) {
+        <app-pass-requirements
+          [newPass]="registerFormGroup.password"
+        ></app-pass-requirements>
+        }
+
+        <div class="login__form-input__container">
+          <i class="fa-solid fa-key login__form-input__icon"></i>
+
+          <input
+            type="password"
+            class="login__form-input"
+            placeholder="Confirm password"
+            [(ngModel)]="registerFormGroup.confirmPassword"
+            [ngModelOptions]="{ standalone: true }"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- <button class="login__log-with login__log-with--google">
+          <img src="./google.png" class="login__log-with__img" alt="Google" />
+          Sign in with Google
+        </button>
+        <button class="login__log-with login__log-with--facebook">
+          <img src="./facebook.png" class="login__log-with__img" alt="Facebook" />
+          Sign in with Facebook
+        </button> -->
+
+      <div class="login__btns">
+        <!-- <button class="login__show-pass">
+            <i class="fa-regular fa-eye"></i>
+  
+            <h5 class="login__show-pass-text">Show password</h5>
+          </button> -->
+
+        <h5 class="login__to-register">
+          Already have an account?
+          <a [routerLink]="['/login']">Sign in here</a>
+        </h5>
+      </div>
+
+      <h5 class="login__err">{{ err }}</h5>
+
+      <button type="submit" class="login__form-submit">Register</button>
+    </form>
+  </div>
+
+  <div class="login__background">
+    <img src="./phone.png" alt="Background" class="login__background-img" />
+  </div>
+</div>

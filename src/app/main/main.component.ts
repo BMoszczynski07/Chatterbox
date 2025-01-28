@@ -142,15 +142,18 @@ export class MainComponent implements OnInit {
     }
 
     try {
-      this.userConversations = null;
-
       this.contactsRequest = await fetch(
         `${this.backendUrlService.backendURL}/users/get-contacts`,
         {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ search_param: e.target.value }),
         }
       );
+
+      console.log('searching contacts...');
 
       const contactsResponse = await this.contactsRequest.json();
 
@@ -158,9 +161,8 @@ export class MainComponent implements OnInit {
         throw new Error('error! ' + contactsResponse.message);
       }
 
-      if (!this.areUsersEqual(this.loadedUsers, contactsResponse)) {
-        this.loadedUsers = contactsResponse; // Aktualizuj tylko jeśli dane są inne
-      }
+      this.userConversations = null;
+      this.loadedUsers = contactsResponse;
 
       console.log(contactsResponse);
     } catch (err) {

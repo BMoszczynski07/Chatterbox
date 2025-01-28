@@ -275,7 +275,13 @@
         {{ user?.create_date | date : "yyyy-MM-dd hh:mm" : "UTC" }}
       </h5>
 
-      <h5 class="user__desc">{{ user?.user_desc }}</h5>
+      <h5 class="user__desc">
+        @if (user?.user_desc === "") {
+        <em>No description</em>
+        }
+
+        {{ user?.user_desc }}
+      </h5>
     </div>
     }
   </div>

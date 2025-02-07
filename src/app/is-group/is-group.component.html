@@ -1,0 +1,123 @@
+@if
+(chatService.loadedConversation.conversationparticipants_conversation.group_pic)
+{
+<button
+  class="main__computer-logo__overlay"
+  (click)="chatService.handleGroupClick()"
+  [routerLink]="
+    '/group/' +
+    chatService.loadedConversation.conversationparticipants_conversation.id
+  "
+>
+  <div class="main__computer-logo__container">
+    <img
+      [src]="
+        chatService.loadedConversation.conversationparticipants_conversation
+          .group_pic
+      "
+      class="main__computer-user-logo"
+      alt="A"
+    />
+  </div>
+  <!-- <div class="main__computer-active-icon"></div> -->
+</button>
+} @else { @if
+(chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+=== 0) {
+<button
+  class="main__computer-logo__overlay"
+  (click)="chatService.handleGroupClick()"
+  [routerLink]="
+    '/group/' +
+    chatService.loadedConversation.conversationparticipants_conversation.id
+  "
+>
+  <div class="main__computer-logo__container">
+    <img
+      [src]="userService.user?.profile_pic"
+      class="main__computer-user-logo"
+      alt="A"
+    />
+  </div>
+</button>
+} @if
+(chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+=== 1) {
+<button
+  class="main__computer-logo__overlay"
+  (click)="chatService.handleGroupClick()"
+  [routerLink]="
+    '/group/' +
+    chatService.loadedConversation.conversationparticipants_conversation.id
+  "
+>
+  <div class="main__computer-logo__container">
+    <img
+      [src]="
+        chatService.loadedConversation.conversationparticipants_conversation
+          .ConversationParticipants[0].conversationparticipants_user.profile_pic
+      "
+      class="main__computer-user-logo"
+      alt="A"
+    />
+  </div>
+</button>
+} @if
+(chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+=== 2) {
+<button
+  class="main__computer-logo__overlay"
+  (click)="chatService.handleGroupClick()"
+  [routerLink]="
+    '/group/' +
+    chatService.loadedConversation.conversationparticipants_conversation.id
+  "
+>
+  <div class="main__computer-logo__container">
+    <img
+      [src]="
+        chatService.loadedConversation.conversationparticipants_conversation
+          .ConversationParticipants[0].conversationparticipants_user.profile_pic
+      "
+      class="main__computer-user-logo--top-left"
+      alt="A"
+    />
+    <img
+      [src]="
+        chatService.loadedConversation.conversationparticipants_conversation
+          .ConversationParticipants[1].conversationparticipants_user.profile_pic
+      "
+      class="main__computer-user-logo--bottom-right"
+      alt="A"
+    />
+  </div>
+</button>
+} @else if
+(chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+> 2) {
+<button
+  class="main__computer-logo__overlay"
+  (click)="chatService.handleGroupClick()"
+  [routerLink]="
+    '/group/' +
+    chatService.loadedConversation.conversationparticipants_conversation.id
+  "
+>
+  <div class="main__computer-logo__container">
+    <img
+      [src]="
+        chatService.loadedConversation.conversationparticipants_conversation
+          .ConversationParticipants[0].conversationparticipants_user.profile_pic
+      "
+      class="main__computer-user-logo--top-left"
+      alt="A"
+    />
+    <span class="main__computer-user-logo__users-count"
+      >+{{
+        chatService.loadedConversation.conversationparticipants_conversation
+          .ConversationParticipants.length
+      }}</span
+    >
+  </div>
+</button>
+} }

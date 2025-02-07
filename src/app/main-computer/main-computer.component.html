@@ -1,0 +1,520 @@
+<div class="main__computer">
+  <div class="main__computer-user">
+    <a href="#">
+      <img class="main__computer-site-logo" src="./icon.png" alt="logo" />
+    </a>
+
+    <span class="main__computer__user-btns">
+      <button class="main__computer__user-btn main__computer__user-bell">
+        <i class="fa-regular fa-comment-dots"></i>
+
+        <span class="main__computer__user-bell__new-messages">2</span>
+      </button>
+
+      <button class="main__computer__user-btn main__computer__user-archive">
+        <i class="fa-regular fa-folder"></i>
+      </button>
+
+      <button class="main__computer__user-btn main__computer__user-settings">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <button
+        (click)="chatService.handleRedirectToUserSettings()"
+        class="main__computer-logo__overlay"
+      >
+        <div class="main__computer-logo__container">
+          <img
+            [src]="userService.user?.profile_pic"
+            alt="user-logo"
+            class="main__computer-user-logo"
+          />
+        </div>
+      </button>
+
+      <button
+        (click)="chatService.handleLogout()"
+        class="main__computer__user-btn main__computer__user-sign-out"
+      >
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </span>
+
+    <!-- @if (userModal) {
+      <div class="main__computer__user-modal">
+        <button
+          class="main__computer__user-modal__archive main__computer__user-modal__btn"
+        >
+          <i class="fa-solid fa-comment-dots"></i>
+          Nowe wiadomości
+          <span class="main__computer__new-chats">1</span>
+        </button>
+        <button
+          class="main__computer__user-modal__archive main__computer__user-modal__btn"
+        >
+          <i class="fa-solid fa-box-archive"></i>
+          Archiwum
+        </button>
+        <button
+          (focus)="handleRedirectToUserSettings()"
+          class="main__computer__user-modal__settings main__computer__user-modal__btn"
+        >
+          <i class="fa-solid fa-gear"></i>
+          Ustawienia
+        </button>
+        <button
+          (focus)="handleLogout()"
+          class="main__computer__user-modal__logout main__computer__user-modal__btn"
+        >
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Wyloguj się
+        </button>
+      </div>
+      }
+
+      <button
+        (focus)="userModal = !userModal"
+        (blur)="userModal = !userModal"
+        class="main__computer-logo__overlay"
+      >
+        <div class="main__computer-logo__container">
+          <img
+            [src]="userService.user?.profile_pic"
+            alt="user-logo"
+            class="main__computer-user-logo"
+          />
+        </div>
+      </button> -->
+  </div>
+
+  <div class="main__computer-conversations">
+    <h1 class="main__computer-active-users__header">
+      <div
+        class="main__computer-active-icon main__computer-active-icon--small"
+      ></div>
+      Active users ({{ chatService.activeUsers.length }})
+    </h1>
+
+    <div class="main__computer-active-users">
+      @for (activeUser of chatService.activeUsers; track activeUser) {
+      <button class="main__computer-active-user">
+        <div class="main__computer-logo__overlay">
+          <div class="main__computer-logo__container">
+            <img
+              [src]="activeUser.profile_pic"
+              class="main__computer-user-logo"
+              alt="Profile pic"
+            />
+          </div>
+          <div class="main__computer-active-icon"></div>
+        </div>
+
+        <div class="main__computer-active__user-name">
+          <h5 class="main__computer-active__first-name">
+            {{ activeUser.first_name }}
+          </h5>
+          <h5 class="main__computer-active__last-name">
+            {{ activeUser.last_name }}
+          </h5>
+        </div>
+      </button>
+      } @if (chatService.activeUsers.length === 0) {
+      <h5 class="main__computer__no-active-users">
+        <i class="fa-solid fa-user-slash"></i>
+        No active users
+      </h5>
+      }
+    </div>
+
+    <h1 class="main__computer-all-conversations__header">
+      @if (chatService.loadedUsers !== null) { Users found ({{
+        chatService.loadedUsers.length
+      }}) } @else if (chatService.userConversations !== null) { Conversations
+      ({{ chatService.userConversations.length }}) }
+    </h1>
+
+    <form class="main__computer-search-conversations__form">
+      <input
+        type="text"
+        class="main__computer-search-conversations__input"
+        (input)="chatService.handleSearchUsers($event)"
+        placeholder="Search"
+      />
+      <button class="main__computer-search-conversations__icon" type="submit">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </form>
+
+    @if (chatService.userConversations !== null) {
+
+    <app-user-conversations></app-user-conversations>
+
+    } @else if (chatService.loadedUsers !== null) {
+    <div class="main__computer-users__found">
+      @for (user of chatService.loadedUsers; track user; let index = $index) {
+      <button
+        class="main__computer-user__found"
+        (click)="chatService.handleContactClick(index)"
+      >
+        <img
+          [src]="user.profile_pic"
+          class="main__computer-user__found-logo"
+          alt="Profile pic"
+        />
+
+        <h5 class="main__computer-user__found-name">
+          {{ user.first_name }} {{ user.last_name }}
+        </h5>
+      </button>
+      }
+    </div>
+    }
+
+    <!-- <div class="main__computer-all-conversations"> @for (conversation of userConversations; track conversation) { @if (conversation.conversationparticipants_conversation.is_group) { <button class="main__computer-one-conversation"> @if (conversation.conversationparticipants_conversation.ConversationParticipants.length === 1) { <div class="main__computer-logo__overlay"> <div class="main__computer-logo__container"> <img [src]=" conversation.conversationparticipants_conversation .ConversationParticipants[0].profile_pic " class="main__computer-user-logo" alt="A" /> </div> </div> } @else if (conversation.conversationparticipants_conversation.ConversationParticipants.length === 2) { <div class="main__computer-logo__overlay"> <div class="main__computer-logo__container"> <img [src]=" conversation.conversationparticipants_conversation .ConversationParticipants[0].profile_pic " class="main__computer-user-logo" alt="A" /> </div> <div class="main__computer-logo__container"></div> <img [src]=" conversation.conversationparticipants_conversation .ConversationParticipants[1].profile_pic " class="main__computer-user-logo" alt="A" /> </div> </div> } <div class="main__computer-conversation-info"> <h1 class="main__computer-conversation-name">Lara Erikson</h1> <h2 class="main__computer-conversation-last-message main__computer-conversation-last-message--unread" > Hello, Bartek! How are you doing? </h2> <h3 class="main__computer-conversation-sent"> <i class="fa-solid fa-circle-check"></i> Sent at 1:45 PM </h3> </div> </button> } @else { } } </div> -->
+  </div>
+
+  @if (chatService.loadedConversation !== null) {
+  <div class="main__computer-conversation">
+    <div class="main__computer-conversation-information">
+      @if
+      (chatService.loadedConversation.conversationparticipants_conversation.is_group)
+      {
+
+      <app-is-group></app-is-group>
+
+      } @else {
+
+      <app-is-not-group></app-is-not-group>
+
+      }
+
+      <div class="main__computer-conversation-information__overlay">
+        <h1 class="main__computer-name-of-conversation">
+          @if
+          (chatService.loadedConversation.conversationparticipants_conversation.is_group)
+          {
+          {{
+            chatService.loadedConversation.conversationparticipants_conversation
+              .title
+          }}
+          } @else {
+          {{
+            chatService.loadedConversation.conversationparticipants_conversation
+              .ConversationParticipants[0].conversationparticipants_user
+              .first_name
+          }}
+          {{
+            chatService.loadedConversation.conversationparticipants_conversation
+              .ConversationParticipants[0].conversationparticipants_user
+              .last_name
+          }}
+          }
+        </h1>
+        <!-- <h2 class="main__computer-is-active">Active now</h2> -->
+      </div>
+
+      <!-- <button class="main__computer-conversation__more-btn">
+          <i
+            class="fa-solid fa-circle-info main__computer-conversation__more"
+          ></i>
+        </button> -->
+    </div>
+
+    <div class="main__computer-conversation__messages">
+      <div class="main__computer-conversation__start-of-conversation">
+        <div
+          class="main__computer-conversation__start-of-conversation__overlay"
+        >
+          @if
+          (!chatService.loadedConversation.conversationparticipants_conversation.is_group)
+          {
+          <button
+            [routerLink]="
+              '/user/' +
+              chatService.loadedConversation
+                .conversationparticipants_conversation
+                .ConversationParticipants[0].conversationparticipants_user
+                .unique_id
+            "
+            class="main__computer-logo__overlay main__computer-logo__overlay--big"
+          >
+            <div class="main__computer-logo__container">
+              <img
+                [src]="
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation
+                    .ConversationParticipants[0].conversationparticipants_user
+                    .profile_pic
+                "
+                class="main__computer-user-logo"
+                alt="A"
+              />
+            </div>
+            <!-- <div
+                class="main__computer-active-icon main__computer-active-icon--big"
+              ></div> -->
+          </button>
+          } @else { @if
+          (chatService.loadedConversation.conversationparticipants_conversation.group_pic)
+          {
+          <button
+            class="main__computer-logo__overlay"
+            (click)="chatService.handleGroupClick()"
+            [routerLink]="
+              '/group/' +
+              chatService.loadedConversation
+                .conversationparticipants_conversation.id
+            "
+          >
+            <div class="main__computer-logo__container">
+              <img
+                [src]="
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation.group_pic
+                "
+                class="main__computer-user-logo"
+                alt="A"
+              />
+            </div>
+            <!-- <div class="main__computer-active-icon"></div> -->
+          </button>
+          } @else { @if
+          (chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+          === 0) {
+          <button
+            class="main__computer-logo__overlay main__computer-logo__overlay--big"
+            (click)="chatService.handleGroupClick()"
+            [routerLink]="
+              '/group/' +
+              chatService.loadedConversation
+                .conversationparticipants_conversation.id
+            "
+          >
+            <div class="main__computer-logo__container">
+              <img
+                [src]="userService.user?.profile_pic"
+                class="main__computer-user-logo"
+                alt="A"
+              />
+            </div>
+          </button>
+          } @if
+          (chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+          === 1) {
+          <button
+            class="main__computer-logo__overlay main__computer-logo__overlay--big"
+            (click)="chatService.handleGroupClick()"
+            [routerLink]="
+              '/group/' +
+              chatService.loadedConversation
+                .conversationparticipants_conversation.id
+            "
+          >
+            <div class="main__computer-logo__container">
+              <img
+                [src]="
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation
+                    .ConversationParticipants[0].conversationparticipants_user
+                    .profile_pic
+                "
+                class="main__computer-user-logo"
+                alt="A"
+              />
+            </div>
+          </button>
+          } @if
+          (chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+          === 2) {
+          <button
+            class="main__computer-logo__overlay main__computer-logo__overlay--big"
+            (click)="chatService.handleGroupClick()"
+            [routerLink]="
+              '/group/' +
+              chatService.loadedConversation
+                .conversationparticipants_conversation.id
+            "
+          >
+            <div class="main__computer-logo__container">
+              <img
+                [src]="
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation
+                    .ConversationParticipants[0].conversationparticipants_user
+                    .profile_pic
+                "
+                class="main__computer-user-logo--top-left main__computer-user-logo--top-left--big"
+                alt="A"
+              />
+              <img
+                [src]="
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation
+                    .ConversationParticipants[1].conversationparticipants_user
+                    .profile_pic
+                "
+                class="main__computer-user-logo--bottom-right main__computer-user-logo--bottom-right--big"
+                alt="A"
+              />
+            </div>
+          </button>
+          } @else if
+          (chatService.loadedConversation.conversationparticipants_conversation.ConversationParticipants.length
+          > 2) {
+          <button
+            class="main__computer-logo__overlay main__computer-logo__overlay--big"
+            (click)="chatService.handleGroupClick()"
+            [routerLink]="
+              '/group/' +
+              chatService.loadedConversation
+                .conversationparticipants_conversation.id
+            "
+          >
+            <div class="main__computer-logo__container">
+              <img
+                [src]="
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation
+                    .ConversationParticipants[0].conversationparticipants_user
+                    .profile_pic
+                "
+                class="main__computer-user-logo--top-left main__computer-user-logo--top-left--big"
+                alt="A"
+              />
+              <span
+                class="main__computer-user-logo__users-count main__computer-user-logo__users-count--big"
+                >+{{
+                  chatService.loadedConversation
+                    .conversationparticipants_conversation
+                    .ConversationParticipants.length
+                }}</span
+              >
+            </div>
+          </button>
+          } } }
+
+          <div class="main__computer-conversation__start-info">
+            <h1 class="main__computer-conversation__name">
+              @if
+              (chatService.loadedConversation.conversationparticipants_conversation.is_group)
+              {
+              {{
+                chatService.loadedConversation
+                  .conversationparticipants_conversation.title
+              }}
+              } @else {
+              {{
+                chatService.loadedConversation
+                  .conversationparticipants_conversation
+                  .ConversationParticipants[0].conversationparticipants_user
+                  .first_name
+              }}
+              {{
+                chatService.loadedConversation
+                  .conversationparticipants_conversation
+                  .ConversationParticipants[0].conversationparticipants_user
+                  .last_name
+              }}
+              }
+            </h1>
+            <!-- <h2 class="main__computer-user-desc">Lorem ipsum dolor sit</h2> -->
+            @if
+            (chatService.loadedConversation.conversationparticipants_conversation.is_group)
+            { @if
+            (chatService.loadedConversation.conversationparticipants_conversation.description
+            === null) {
+            <h2 class="main__computer-conversation__desc">
+              <em>No description</em>
+            </h2>
+            } @else {
+
+            <h2 class="main__computer-conversation__desc">
+              {{
+                chatService.loadedConversation
+                  .conversationparticipants_conversation.description
+              }}
+            </h2>
+            } } @if
+            (!chatService.loadedConversation.conversationparticipants_conversation.is_group)
+            {
+            <h2 class="main__computer-since">
+              <i class="fa-regular fa-calendar-days"></i> On Chatterbox since:
+              {{
+                chatService.loadedConversation
+                  .conversationparticipants_conversation
+                  .ConversationParticipants[0].conversationparticipants_user
+                  .create_date | date : "yyyy-MM-dd hh:mm" : "UTC"
+              }}
+            </h2>
+            }
+          </div>
+        </div>
+
+        <h3 class="main__computer-start">
+          @if
+          (!chatService.loadedConversation.conversationparticipants_conversation.is_group)
+          { This is the beginning of your conversation with
+          {{
+            chatService.loadedConversation.conversationparticipants_conversation
+              .ConversationParticipants[0].conversationparticipants_user
+              .first_name
+          }}
+          {{
+            chatService.loadedConversation.conversationparticipants_conversation
+              .ConversationParticipants[0].conversationparticipants_user
+              .last_name
+          }}
+          } @else { This is the beginning of a group conversation. }
+        </h3>
+      </div>
+
+      @for (message of chatService.loadedMessages; track message) {
+      <div
+        [class.main__computer-message__container--mine]="
+          message.user_id === userService.user?.id
+        "
+        class="main__computer-message__container"
+      >
+        <h5 class="main__computer-message">{{ message.content }}</h5>
+      </div>
+      }
+    </div>
+
+    <form
+      class="main__computer-conversation__send-message__form"
+      (submit)="chatService.sendMessage($event)"
+    >
+      <textarea
+        [(ngModel)]="chatService.messageContent"
+        [ngModelOptions]="{ standalone: true }"
+        class="main__computer-conversation__send-message"
+        placeholder="Type your message"
+      ></textarea>
+      <label for="file-upload">
+        <i
+          class="main__computer-conversation__file-input fa-solid fa-image"
+        ></i>
+      </label>
+      <input
+        id="file-upload"
+        type="file"
+        class="hidden-file-input"
+        accept="image/*"
+        hidden
+      />
+      <!-- <button class="main__computer-conversation__audio" type="button">
+            <i class="fa-solid fa-microphone"></i>
+          </button> -->
+      <button
+        [class.main__computer-conversation__send--disabled]="
+          !chatService.messageContent
+        "
+        class="main__computer-conversation__send"
+        type="submit"
+      >
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </form>
+  </div>
+  }
+</div>

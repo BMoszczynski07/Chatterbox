@@ -1,0 +1,171 @@
+<div class="main__computer-all-conversations">
+  @for (conversation of chatService.userConversations; track conversation) {
+  <button
+    class="main__computer-one-conversation"
+    (click)="
+      chatService.handleLoadConversation(
+        conversation.conversationparticipants_conversation.id
+      )
+    "
+  >
+    @if (!conversation.conversationparticipants_conversation.group_pic) { @if
+    (conversation.conversationparticipants_conversation.ConversationParticipants.length
+    === 0) {
+    <div class="main__computer-logo__overlay">
+      <div class="main__computer-logo__container">
+        <img
+          [src]="userService.user?.profile_pic"
+          class="main__computer-user-logo"
+          alt="Profile pic"
+        />
+      </div>
+    </div>
+    } @if
+    (conversation.conversationparticipants_conversation.ConversationParticipants.length
+    === 1) {
+    <div class="main__computer-logo__overlay">
+      <div class="main__computer-logo__container">
+        <img
+          [src]="
+            conversation.conversationparticipants_conversation
+              .ConversationParticipants[0].conversationparticipants_user
+              .profile_pic
+          "
+          class="main__computer-user-logo"
+          alt="Profile pic"
+        />
+      </div>
+    </div>
+    } @else if
+    (conversation.conversationparticipants_conversation.ConversationParticipants.length
+    === 2) {
+    <div class="main__computer-logo__overlay--group">
+      <img
+        [src]="
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[0].conversationparticipants_user
+            .profile_pic
+        "
+        class="main__computer-user-logo--top-left"
+        alt="Profile pic"
+      />
+      <img
+        [src]="
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[1].conversationparticipants_user
+            .profile_pic
+        "
+        class="main__computer-user-logo--bottom-right"
+        alt="Profile pic"
+      />
+    </div>
+    } @else if
+    (conversation.conversationparticipants_conversation.ConversationParticipants.length
+    > 2) {
+    <div class="main__computer-logo__overlay--group">
+      <img
+        [src]="
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[0].conversationparticipants_user
+            .profile_pic
+        "
+        class="main__computer-user-logo--top-left"
+        alt="Profile pic"
+      />
+      <span class="main__computer-user-logo__users-count"
+        >+{{
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants.length
+        }}</span
+      >
+    </div>
+    } } @else {
+    <div class="main__computer-logo__overlay">
+      <div class="main__computer-logo__container">
+        <img
+          [src]="conversation.conversationparticipants_conversation.group_pic"
+          class="main__computer-user-logo"
+          alt="Profile pic"
+        />
+      </div>
+    </div>
+    }
+
+    <div class="main__computer-conversation-info">
+      @if (conversation.conversationparticipants_conversation.is_group) {
+      <h1 class="main__computer-conversation-name">
+        @if (conversation.conversationparticipants_conversation.title) {
+        {{ conversation.conversationparticipants_conversation.title }}
+        } @else { @if
+        (conversation.conversationparticipants_conversation.ConversationParticipants.length
+        === 0) {
+        {{ userService.user?.first_name }}
+        } @else if
+        (conversation.conversationparticipants_conversation.ConversationParticipants.length
+        === 1) {
+        {{ userService.user?.first_name }},
+        {{
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[0].conversationparticipants_user
+            .first_name
+        }}
+        } @else if
+        (conversation.conversationparticipants_conversation.ConversationParticipants.length
+        > 1) {
+        {{ userService.user?.first_name }},
+        {{
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[0].conversationparticipants_user
+            .first_name
+        }}
+        +{{
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants.length - 1
+        }}
+        } }
+      </h1>
+      } @else {
+      <h1 class="main__computer-conversation-name">
+        {{
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[0].conversationparticipants_user
+            .first_name
+        }}
+        {{
+          conversation.conversationparticipants_conversation
+            .ConversationParticipants[0].conversationparticipants_user.last_name
+        }}
+      </h1>
+      }
+      <!-- <h2
+              [class]="
+                conversation.conversationparticipants_conversation.Messages[0]
+                  ?.messageViews.length > 0
+                  ? 'main__computer-conversation-last-message'
+                  : 'main__computer-conversation-last-message main__computer-conversation-last-message--unread'
+              "
+            > -->
+      <h2 class="main__computer-conversation-last-message">
+        @if (conversation.conversationparticipants_conversation.Messages[0]) {
+        @if
+        (conversation.conversationparticipants_conversation.Messages[0]?.messages_user.unique_id
+        === userService.user?.unique_id) { You:
+        {{
+          conversation.conversationparticipants_conversation.Messages[0]
+            ?.content
+        }}
+        } @else {
+        {{
+          conversation.conversationparticipants_conversation.Messages[0]
+            ?.messages_user.first_name + ":"
+        }}
+        {{
+          conversation.conversationparticipants_conversation.Messages[0]
+            ?.content
+        }}
+        } }
+      </h2>
+    </div>
+  </button>
+  }
+</div>

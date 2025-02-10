@@ -217,12 +217,13 @@ export class ChatService {
       );
     }
 
-    const uniqueId =
-      this.loadedConversation.conversationparticipants_conversation
-        .ConversationParticipants[0].conversationparticipants_user.unique_id ||
-      this.userService.user?.unique_id;
+    const uniqueIds =
+      this.loadedConversation.conversationparticipants_conversation.ConversationParticipants.map(
+        (participant: any) =>
+          participant.conversationparticipants_user.unique_id
+      );
 
-    this.socketService.socket.emit('send-message', { uniqueId, message });
+    this.socketService.socket.emit('send-message', { uniqueIds, message });
     this.messageContent = '';
 
     setTimeout(() => {
@@ -260,10 +261,8 @@ export class ChatService {
           message.messages[0].conversation_id
       );
 
-      const firstConversation = this.userConversations[0];
-
-      this.userConversations[index] = firstConversation!;
-      this.userConversations[0] = getConversationResponse;
+      this.userConversations.splice(index, 1);
+      this.userConversations.unshift(getConversationResponse);
 
       console.log(this.userConversations);
     } catch (err) {

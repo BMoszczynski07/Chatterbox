@@ -120,10 +120,8 @@ export class MainComponent implements OnInit {
             return;
           }
 
-          const firstConversation = this.chatService.userConversations[0];
-
-          this.chatService.userConversations[index] = firstConversation!;
-          this.chatService.userConversations[0] = getConversationResponse;
+          this.chatService.userConversations.splice(index, 1);
+          this.chatService.userConversations.unshift(getConversationResponse);
 
           console.log(this.chatService.userConversations);
         } catch (err) {

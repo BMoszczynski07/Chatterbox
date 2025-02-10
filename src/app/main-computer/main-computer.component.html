@@ -468,14 +468,45 @@
         </h3>
       </div>
 
-      @for (message of chatService.loadedMessages; track message) {
-      <div
-        [class.main__computer-message__container--mine]="
-          message.user_id === userService.user?.id
-        "
-        class="main__computer-message__container"
-      >
-        <h5 class="main__computer-message">{{ message.content }}</h5>
+      @for (messageBox of chatService.loadedMessages; track messageBox) {
+      <div class="main__computer-message__layout">
+        @if (messageBox.from !== userService.user?.id) {
+        <h5 class="main__computer-message__from">
+          {{ messageBox.first_name }}
+        </h5>
+        }
+
+        <div class="main__computer-message__box">
+          @if (messageBox.from !== userService.user?.id) {
+          <div class="main__computer-message__profile-pic">
+            <img
+              [routerLink]="'/user/' + messageBox.unique_id"
+              [src]="messageBox.profile_pic"
+              alt="profile_pic"
+              class="main__computer-message__profile-pic__img"
+            />
+          </div>
+          }
+          <div class="main__computer-message__list">
+            @for (message of messageBox.messages; track message) {
+            <div
+              [class.main__computer-message__container--mine]="
+                message.user_id === userService.user?.id
+              "
+              class="main__computer-message__container"
+            >
+              <h5
+                class="main__computer-message"
+                [class.main__computer-message--mine]="
+                  message.user_id === userService.user?.id
+                "
+              >
+                {{ message.content }}
+              </h5>
+            </div>
+            }
+          </div>
+        </div>
       </div>
       }
     </div>

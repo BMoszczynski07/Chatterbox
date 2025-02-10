@@ -9,7 +9,7 @@ import { UserService } from './user.service';
 })
 export class SocketService {
   public socket!: Socket;
-  private readonly socketIoURL: string = 'http://localhost:3000';
+  private readonly socketIoURL: string = 'http://192.168.1.42:3000';
 
   constructor(
     private readonly backendUrlService: BackendUrlService,

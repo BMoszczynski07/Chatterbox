@@ -6,6 +6,7 @@ import { SocketService } from './socket.service';
 import { BackendUrlService } from './backend-url.service';
 import { User } from './classes/User';
 import { Message } from './classes/Message';
+import { Messages } from './interfaces/Messages';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class ChatService {
 
   public activeUsers: User[] = [];
 
-  public userConversations: any = [];
+  public userConversations: any = null;
 
   public userModal: boolean = false;
 
@@ -29,9 +30,9 @@ export class ChatService {
 
   public loadedUsers: any = null;
 
-  public loadedMessages: Message[] = [];
+  public loadedMessages: Messages[] = [];
 
-  public contactsRequest: any = [];
+  public contactsRequest: any = null;
 
   messageContent: string = '';
 
@@ -56,7 +57,7 @@ export class ChatService {
       }
 
       if (findConversationResponse !== null) {
-        if (findConversationResponse == this.loadedConversation) {
+        if (findConversationResponse === this.loadedConversation) {
           this.loadedConversation = null;
           return;
         }
@@ -179,17 +180,42 @@ export class ChatService {
 
     console.log(this.loadedConversation);
 
-    const message = new Message(
-      this.loadedConversation.conversationparticipants_conversation.id!,
-      this.userService.user?.id || 0,
-      new Date(),
-      this.messageContent,
-      'message',
-      '',
-      null
-    );
+    const message: Messages = {
+      first_name: this.userService.user?.first_name || '',
+      profile_pic: this.userService.user?.profile_pic || '',
+      unique_id: this.userService.user?.unique_id || '',
+      from: this.userService.user?.id || null,
+      messages: [
+        new Message(
+          this.loadedConversation.conversationparticipants_conversation.id!,
+          this.userService.user?.id || 0,
+          new Date(),
+          this.messageContent,
+          'message',
+          '',
+          null
+        ),
+      ],
+    };
 
-    this.loadedMessages.push(message);
+    if (
+      this.loadedMessages.length === 0 ||
+      this.loadedMessages[this.loadedMessages.length - 1].from !==
+        this.userService.user?.id
+    ) {
+      if (this.userService.user?.id)
+        this.loadedMessages.push({
+          first_name: this.userService.user?.first_name,
+          profile_pic: this.userService.user?.profile_pic,
+          unique_id: this.userService.user?.unique_id,
+          from: this.userService.user.id,
+          messages: [message.messages[0]],
+        });
+    } else {
+      this.loadedMessages[this.loadedMessages.length - 1].messages.push(
+        message.messages[0]
+      );
+    }
 
     const uniqueId =
       this.loadedConversation.conversationparticipants_conversation
@@ -207,7 +233,7 @@ export class ChatService {
 
     try {
       const getConversationRequest = await fetch(
-        `${this.backendUrlService.backendURL}/messages/get-conversation/${message.conversation_id}`,
+        `${this.backendUrlService.backendURL}/messages/get-conversation/${message.messages[0].conversation_id}`,
         {
           method: 'GET',
           headers: {
@@ -231,12 +257,12 @@ export class ChatService {
       const index = this.userConversations.findIndex(
         (conversation: any) =>
           conversation.conversationparticipants_conversation.id ===
-          message.conversation_id
+          message.messages[0].conversation_id
       );
 
       const firstConversation = this.userConversations[0];
 
-      this.userConversations[index] = firstConversation;
+      this.userConversations[index] = firstConversation!;
       this.userConversations[0] = getConversationResponse;
 
       console.log(this.userConversations);
@@ -261,21 +287,25 @@ export class ChatService {
       (conv: any) => conv.conversationparticipants_conversation.id === id
     );
 
-    if (findConversation == this.loadedConversation) {
+    if (
+      this.loadedConversation &&
+      findConversation.conversationparticipants_conversation.id ===
+        this.loadedConversation.conversationparticipants_conversation.id
+    ) {
       this.loadedConversation = null;
       return;
     }
 
-    this.loadedConversation = findConversation;
+    this.loadedConversation = findConversation || null;
 
     console.log(this.loadedConversation);
-
-    console.log(id);
 
     this.handleLoadMessages(id);
   }
 
   async handleLoadMessages(id: number) {
+    this.loadedMessages = [];
+
     try {
       const response = await fetch(
         `${this.backendUrlService.backendURL}/messages/get-messages/${id}`,
@@ -295,13 +325,40 @@ export class ChatService {
         throw new Error(data.message);
       }
 
-      this.loadedMessages = data;
+      for (let i = 0; i < data.length; i++) {
+        if (i === 0) {
+          this.loadedMessages.push({
+            first_name: data[0].messages_user.first_name,
+            profile_pic: data[0].messages_user.profile_pic,
+            unique_id: data[0].messages_user.unique_id,
+            from: data[0].user_id,
+            messages: [data[0]],
+          });
+        } else {
+          if (
+            data[i].user_id !==
+            this.loadedMessages[this.loadedMessages.length - 1].from
+          ) {
+            this.loadedMessages.push({
+              first_name: data[i].messages_user.first_name,
+              profile_pic: data[i].messages_user.profile_pic,
+              unique_id: data[i].messages_user.unique_id,
+              from: data[i].user_id,
+              messages: [data[i]],
+            });
+          } else {
+            this.loadedMessages[this.loadedMessages.length - 1].messages.push(
+              data[i]
+            );
+          }
+        }
+      }
+
+      console.log(this.loadedMessages);
 
       setTimeout(() => {
         this.scrollToBottom();
       }, 100);
-
-      console.log(this.loadedMessages);
     } catch (err) {
       console.error(err);
     }

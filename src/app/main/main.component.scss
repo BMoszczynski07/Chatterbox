@@ -70,12 +70,18 @@
       position: absolute;
       bottom: 0;
       right: 0;
-      width: 32px;
-      height: 32px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+
+      &--small {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
 
       &--big {
         width: 70px;
@@ -93,16 +99,21 @@
 
     &-logo__overlay--group {
       position: relative;
-      width: 42px;
-      height: 42px;
+      width: 50px;
+      height: 50px;
       margin: 5px;
     }
 
     &-user-logo--top-left,
     &-user-logo--bottom-right {
-      width: 32px;
-      height: 32px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
+
+      &--small {
+        width: 30px;
+        height: 30px;
+      }
 
       &--big {
         width: 70px;
@@ -383,7 +394,7 @@
 
     &-conversation__send-message__form {
       display: flex;
-      margin-bottom: 8px;
+      margin: 8px 0;
     }
 
     &-conversation__send-message {
@@ -487,7 +498,6 @@
     &-message__container {
       width: 100%;
       display: flex;
-      margin: 2px 0;
 
       &--mine {
         justify-content: flex-end;
@@ -495,13 +505,30 @@
     }
 
     &-message {
-      background: #65cfdd;
+      background: #f0f0f0;
+      color: #3f3f3f;
       margin: 0;
       padding: 8px;
       border-radius: 5px;
       font-weight: 400;
-      margin: 0 5px;
+      margin: 2px 5px;
       max-width: 300px;
+      transition: 0.15s;
+
+      &:hover {
+        background: darken(#f0f0f0, 3%);
+        cursor: pointer;
+      }
+
+      &--mine {
+        background: $main-color;
+        color: #ddeff0;
+
+        &:hover {
+          background: darken($main-color, 3%);
+          cursor: pointer;
+        }
+      }
 
       &--image {
         padding: 0;
@@ -644,6 +671,43 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    &-message__profile-pic__img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-bottom: 2px;
+      cursor: pointer;
+    }
+
+    &-message__layout {
+      width: 100%;
+    }
+
+    &-message__profile-pic {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    &-message__box {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    &-message__list {
+      width: 100%;
+    }
+
+    &-message__from {
+      margin: 0;
+      margin-top: 5px;
+      margin-left: 32px;
+      margin-bottom: 2px;
+      font-weight: 400;
+      font-size: 13px;
+      color: #878787;
     }
   }
 

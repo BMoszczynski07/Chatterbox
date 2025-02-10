@@ -85,7 +85,7 @@ export class MainComponent implements OnInit {
 
         try {
           const getConversationRequest = await fetch(
-            `${this.backendUrlService.backendURL}/messages/get-conversation/${message.conversation_id}`,
+            `${this.backendUrlService.backendURL}/messages/get-conversation/${message.messages[0].conversation_id}`,
             {
               method: 'GET',
               headers: {
@@ -109,7 +109,7 @@ export class MainComponent implements OnInit {
           const index = this.chatService.userConversations.findIndex(
             (conversation: any) =>
               conversation.conversationparticipants_conversation.id ===
-              message.conversation_id
+              message.messages[0].conversation_id
           );
 
           if (index === -1) {
@@ -122,7 +122,7 @@ export class MainComponent implements OnInit {
 
           const firstConversation = this.chatService.userConversations[0];
 
-          this.chatService.userConversations[index] = firstConversation;
+          this.chatService.userConversations[index] = firstConversation!;
           this.chatService.userConversations[0] = getConversationResponse;
 
           console.log(this.chatService.userConversations);
@@ -132,10 +132,22 @@ export class MainComponent implements OnInit {
 
         if (
           this.chatService.loadedConversation
-            ?.conversationparticipants_conversation.conversation_id ===
-          message.id
+            .conversationparticipants_conversation.id ===
+          message.messages[0].conversation_id
         ) {
-          this.chatService.loadedMessages.push(message);
+          console.log('pushing message...');
+
+          if (
+            this.chatService.loadedMessages[
+              this.chatService.loadedMessages.length - 1
+            ].from === message.from
+          ) {
+            this.chatService.loadedMessages[
+              this.chatService.loadedMessages.length - 1
+            ].messages.push(message.messages[0]);
+          } else {
+            this.chatService.loadedMessages.push(message);
+          }
         }
       });
 

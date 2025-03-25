@@ -694,6 +694,7 @@
       width: 100%;
       display: flex;
       justify-content: flex-start;
+      margin-left: 3px;
     }
 
     &-message__list {
@@ -708,6 +709,10 @@
       font-weight: 400;
       font-size: 13px;
       color: #878787;
+    }
+
+    &-margin {
+      margin-top: 8px;
     }
   }
 

@@ -10,6 +10,7 @@ import { SocketService } from '../socket.service';
 import { ChatService } from '../chat.service';
 import { BackendUrlService } from '../backend-url.service';
 import { MainPhoneComponent } from '../main-phone/main-phone.component';
+import { Messages } from '../interfaces/Messages';
 
 @Component({
   selector: 'app-main',
@@ -135,16 +136,17 @@ export class MainComponent implements OnInit {
         ) {
           console.log('pushing message...');
 
-          if (
+          const lastMessage =
             this.chatService.loadedMessages[
               this.chatService.loadedMessages.length - 1
-            ].from === message.from
-          ) {
-            this.chatService.loadedMessages[
-              this.chatService.loadedMessages.length - 1
-            ].messages.push(message.messages[0]);
-          } else {
-            this.chatService.loadedMessages.push(message);
+            ];
+
+          if (this.isMessages(lastMessage)) {
+            if (lastMessage.from === message.from) {
+              lastMessage.messages.push(message.messages[0]);
+            } else {
+              this.chatService.loadedMessages.push(message);
+            }
           }
         }
       });
@@ -186,5 +188,9 @@ export class MainComponent implements OnInit {
     } catch (err) {
       console.error('Error -> ' + err);
     }
+  }
+
+  private isMessages(obj: any): obj is Messages {
+    return obj && typeof obj === 'object' && 'from' in obj && 'messages' in obj;
   }
 }

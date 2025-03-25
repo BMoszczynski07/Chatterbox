@@ -7,6 +7,8 @@ import { BackendUrlService } from './backend-url.service';
 import { User } from './classes/User';
 import { Message } from './classes/Message';
 import { Messages } from './interfaces/Messages';
+import { DateTime } from './interfaces/DateTime';
+import { Margin } from './interfaces/Margin';
 
 @Injectable({
   providedIn: 'root',
@@ -178,8 +180,6 @@ export class ChatService {
 
     if (!this.messageContent) return;
 
-    console.log(this.loadedConversation);
-
     const message: Messages = {
       first_name: this.userService.user?.first_name || '',
       profile_pic: this.userService.user?.profile_pic || '',
@@ -198,10 +198,12 @@ export class ChatService {
       ],
     };
 
+    const lastElLoadedMessages =
+      this.loadedMessages[this.loadedMessages.length - 1];
+
     if (
       this.loadedMessages.length === 0 ||
-      this.loadedMessages[this.loadedMessages.length - 1].from !==
-        this.userService.user?.id
+      lastElLoadedMessages.from !== this.userService.user?.id
     ) {
       if (this.userService.user?.id)
         this.loadedMessages.push({
@@ -212,9 +214,7 @@ export class ChatService {
           messages: [message.messages[0]],
         });
     } else {
-      this.loadedMessages[this.loadedMessages.length - 1].messages.push(
-        message.messages[0]
-      );
+      lastElLoadedMessages.messages.push(message.messages[0]);
     }
 
     const uniqueIds =
@@ -234,7 +234,7 @@ export class ChatService {
 
     try {
       const getConversationRequest = await fetch(
-        `${this.backendUrlService.backendURL}/messages/get-conversation/${message.messages[0].conversation_id}`,
+        `${this.backendUrlService.backendURL}/messages/get-conversation/${this.loadedConversation.conversationparticipants_conversation.id}`,
         {
           method: 'GET',
           headers: {
@@ -258,7 +258,7 @@ export class ChatService {
       const index = this.userConversations.findIndex(
         (conversation: any) =>
           conversation.conversationparticipants_conversation.id ===
-          message.messages[0].conversation_id
+          this.loadedConversation.conversationparticipants_conversation.id
       );
 
       this.userConversations.splice(index, 1);
@@ -268,6 +268,18 @@ export class ChatService {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  isMessage(obj: any): obj is Messages {
+    return obj && 'message_date' in obj && 'user_id' in obj;
+  }
+
+  isDateTime(obj: any): obj is DateTime {
+    return obj && 'dateTime' in obj;
+  }
+
+  isMargin(obj: any): obj is Margin {
+    return obj && 'topMargin' in obj;
   }
 
   handleGroupClick() {}
@@ -325,32 +337,51 @@ export class ChatService {
       }
 
       for (let i = 0; i < data.length; i++) {
+        const newMessageBox = {
+          first_name: data[i].messages_user.first_name,
+          profile_pic: data[i].messages_user.profile_pic,
+          unique_id: data[i].messages_user.unique_id,
+          from: data[i].user_id,
+          messages: [data[i]],
+        };
+
         if (i === 0) {
-          this.loadedMessages.push({
-            first_name: data[0].messages_user.first_name,
-            profile_pic: data[0].messages_user.profile_pic,
-            unique_id: data[0].messages_user.unique_id,
-            from: data[0].user_id,
-            messages: [data[0]],
-          });
-        } else {
-          if (
-            data[i].user_id !==
-            this.loadedMessages[this.loadedMessages.length - 1].from
-          ) {
-            this.loadedMessages.push({
-              first_name: data[i].messages_user.first_name,
-              profile_pic: data[i].messages_user.profile_pic,
-              unique_id: data[i].messages_user.unique_id,
-              from: data[i].user_id,
-              messages: [data[i]],
+          this.loadedMessages.push(newMessageBox);
+          continue;
+        }
+
+        const lastElLoadedMessages =
+          this.loadedMessages[this.loadedMessages.length - 1];
+
+        if (data[i].from === data[i - 1].from) {
+          const date1 = new Date(data[i].message_date);
+          const date2 = new Date(data[i - 1].message_date);
+          const dateDiffInMinutes =
+            (date1.getTime() - date2.getTime()) / (1000 * 60);
+
+          console.log(dateDiffInMinutes);
+
+          if (dateDiffInMinutes > 1.0 && dateDiffInMinutes <= 5.0) {
+            // add margin...
+            lastElLoadedMessages.messages.push({
+              topMargin: 8,
             });
-          } else {
-            this.loadedMessages[this.loadedMessages.length - 1].messages.push(
-              data[i]
-            );
+          }
+
+          if (dateDiffInMinutes > 5) {
+            // add dateTime...
           }
         }
+
+        console.log(this.loadedMessages);
+
+        if (data[i].user_id !== lastElLoadedMessages.from) {
+          this.loadedMessages.push(newMessageBox);
+        } else {
+          lastElLoadedMessages.messages.push(data[i]);
+        }
+
+        console.log(lastElLoadedMessages, this.loadedMessages);
       }
 
       console.log(this.loadedMessages);

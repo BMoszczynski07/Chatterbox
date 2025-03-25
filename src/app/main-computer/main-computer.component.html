@@ -488,7 +488,13 @@
           </div>
           }
           <div class="main__computer-message__list">
-            @for (message of messageBox.messages; track message) {
+            @for (message of messageBox.messages; track message) { @if
+            (chatService.isMargin(message) && !chatService.isDateTime(message)
+            && !chatService.isMessage(message)) {
+            <div [style]="{ 'margin-top': message.topMargin + 'px' }"></div>
+            } @if (!chatService.isMargin(message) &&
+            !chatService.isDateTime(message) && chatService.isMessage(message))
+            {
             <div
               [class.main__computer-message__container--mine]="
                 message.user_id === userService.user?.id
@@ -504,7 +510,7 @@
                 {{ message.content }}
               </h5>
             </div>
-            }
+            } }
           </div>
         </div>
       </div>

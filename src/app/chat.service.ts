@@ -192,7 +192,7 @@ export class ChatService {
           new Date(),
           this.messageContent,
           'message',
-          '',
+          null,
           null
         ),
       ],
@@ -217,6 +217,32 @@ export class ChatService {
       lastElLoadedMessages.messages.push(message.messages[0]);
     }
 
+    try {
+      const sendMessageRequest = await fetch(
+        `${this.backendUrlService.backendURL}/messages/save/${this.loadedConversation.conversationparticipants_conversation.id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.cookieService.getCookieValue(
+              'token'
+            )}`,
+          },
+          body: JSON.stringify(message.messages[0]),
+        }
+      );
+
+      const sendMessageResponse = await sendMessageRequest.json();
+
+      if (!sendMessageRequest.ok) {
+        throw new Error(
+          'Failed to save message: ' + sendMessageResponse.message
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
     const uniqueIds =
       this.loadedConversation.conversationparticipants_conversation.ConversationParticipants.map(
         (participant: any) =>
@@ -224,6 +250,7 @@ export class ChatService {
       );
 
     this.socketService.socket.emit('send-message', { uniqueIds, message });
+
     this.messageContent = '';
 
     setTimeout(() => {

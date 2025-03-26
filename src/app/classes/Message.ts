@@ -5,7 +5,7 @@ export class Message {
     public message_date: Date,
     public content: string,
     public type: 'message' | 'image' | 'audio',
-    public img_src: string,
+    public img_src: string | null,
     public responseTo: number | null,
     public id?: number
   ) {}
